@@ -2,7 +2,7 @@
 ARG JAVA_VERSION=8
 FROM openjdk:${JAVA_VERSION}-jre-slim
 
-ARG HADOOP_VERSION="2.7.7"
+ARG HADOOP_VERSION=
 
 ENV HADOOP_NAME "hadoop-${HADOOP_VERSION}"
 ENV HADOOP_DIR "/opt/${HADOOP_NAME}"
@@ -21,9 +21,10 @@ RUN set -eux; \
     #
     # Hadoop installation
     #
-    wget https://archive.apache.org/dist/hadoop/core/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz; \
-    tar zxf hadoop-${HADOOP_VERSION}.tar.gz -C /opt; \
-    rm hadoop-${HADOOP_VERSION}.tar.gz; \
+    PACKAGE_NAME=hadoop-${HADOOP_VERSION}.tar.gz; \
+    wget https://archive.apache.org/dist/hadoop/core/hadoop-${HADOOP_VERSION}/${PACKAGE_NAME}; \
+    tar zxf ${PACKAGE_NAME} -C /opt; \
+    rm ${PACKAGE_NAME}; \
     ln -s ${HADOOP_DIR} ${HADOOP_HOME}; \
     #
     # Remove unnecessary build-time only dependencies
