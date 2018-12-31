@@ -21,7 +21,7 @@ RUN set -eux; \
     #
     # Hadoop installation
     #
-    PACKAGE_NAME=apache-hive-${HIVE_VERSION}-bin.tar.gz; \
+    PACKAGE_NAME=hadoop-${HADOOP_VERSION}.tar.gz; \
     wget https://archive.apache.org/dist/hadoop/core/hadoop-${HADOOP_VERSION}/${PACKAGE_NAME}; \
     tar zxf ${PACKAGE_NAME} -C /opt; \
     rm ${PACKAGE_NAME}; \
