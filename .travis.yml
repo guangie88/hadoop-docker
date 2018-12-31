@@ -1,0 +1,48 @@
+language: bash
+
+env:
+  global:
+  - IMAGE_NAME=${DOCKER_USERNAME}/hadoop
+  - JAVA_VERSION=8
+
+matrix:
+  include:
+  - services: docker
+    env:
+    - HADOOP_VERSION=2.7.7
+  - services: docker
+    env:
+    - HADOOP_VERSION=2.8.5
+  - services: docker
+    env:
+    - HADOOP_VERSION=2.9.2
+  - services: docker
+    env:
+    - HADOOP_VERSION=3.0.3
+  - services: docker
+    env:
+    - HADOOP_VERSION=3.1.1
+  
+before_script:
+- docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+
+script:
+- TAG_NAME="${HADOOP_VERSION}_java-${JAVA_VERSION}"
+- FULL_IMAGE_NAME="${IMAGE_NAME}:${TAG_NAME}"
+- |
+  docker build . \
+    --build-arg HADOOP_VERSION="${HADOOP_VERSION}" \
+    -t ${FULL_IMAGE_NAME}
+
+after_success:
+- |
+  docker run --rm ${FULL_IMAGE_NAME} \
+    hadoop version
+- |  
+  if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
+    docker push ${FULL_IMAGE_NAME};
+  fi
+
+branches:
+  only:
+  - master
